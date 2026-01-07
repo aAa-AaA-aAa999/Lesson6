@@ -1,6 +1,6 @@
-const path = require("path")
-const fs = require("fs")
-const http = require("http")
+const path = require("node:path")
+const fs = require("node:fs/promises")
+const http = require("node:http")
 const PORT = 3000
 
 const server = http.createServer(async (request, response)=>{
@@ -57,14 +57,9 @@ const server = http.createServer(async (request, response)=>{
     else {
             response.statusCode = 404
             const imgPath = path.join(__dirname, 'rosi.png') 
-            if (fs.existsSync(imgPath)) { 
-                const img = fs.readFileSync(imgPath) 
-                response.setHeader("Content-Type", "image/png")
-                response.end(img) 
-            } 
-            else { 
-                response.end("Страница не найдена") 
-            }
+            const img = await fs.readFile(imgPath) 
+            response.setHeader("Content-Type", "image/png")
+            response.end(img) 
         }
 })
 
